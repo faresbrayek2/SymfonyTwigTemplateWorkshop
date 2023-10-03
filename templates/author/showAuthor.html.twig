@@ -1,0 +1,20 @@
+{% if authors is empty %}
+    <p>No authors</p>
+{% else %}
+    <ul class="author-list">
+        {% for author in authors %}
+            {% if author.id == id %}
+                <li class="author-item">
+                    <div class="author-details">
+                        <div class="author-name">{{ author.username|upper }}</div>
+                        <div class="author-email">{{ author.email }}</div>
+                        <div class="author-books">Number of books: {{ author.nb_books }}</div>
+                    </div>
+                    <div class="author-picture">
+                        <img src="{{ author.picture }}" alt="{{ author.username }}" />
+                    </div>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}

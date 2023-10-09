@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\AuthorRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Author;
+use App\Form\AuthorType;
 
 
 class AuthorController extends AbstractController
@@ -124,6 +125,16 @@ class AuthorController extends AbstractController
         $em= $managerRegistry->getManager();
         $em->flush();
         return $this->redirectToRoute("list_authors");
+    }
+
+    #[Route('/add', name: 'add')]
+    public function add()
+    {
+        $author= new Author();
+        $form= $this->createForm(AuthorType::class,$author);
+        return $this->render("author/add.html.twig",
+            ['form'=>$form->createView()]);
+        // or use renderForm()
     }
 
 

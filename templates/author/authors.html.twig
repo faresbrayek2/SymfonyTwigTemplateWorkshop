@@ -13,6 +13,7 @@
             <td>{{ author.email }}</td>
             <td>
                 <a href="{{ path('update_author', {'id': author.id}) }}">Edit</a>
+                <a href="{{ path('showAuthorById', {'id': author.id}) }}">Show</a>
                 <a href="{{ path('delete', {'id': author.id}) }}">Delete</a>
             </td>
         </tr>

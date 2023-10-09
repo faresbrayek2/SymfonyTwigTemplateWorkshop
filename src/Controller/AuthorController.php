@@ -87,7 +87,7 @@ class AuthorController extends AbstractController
     {
         $author= $repository->find($id);
         $Username = $author->getUsername();
-        return $this->render("author/showAuthorDetails.html.twig",
+        return $this->render("author/showauth.html.twig",
             array('author'=>$author));
     }
 
@@ -119,14 +119,19 @@ class AuthorController extends AbstractController
 
 
     #[Route('/update/{id}', name: 'update_author')]
-    public function update(ManagerRegistry $managerRegistry,$id,AuthorRepository $repository)
+    public function update(ManagerRegistry $managerRegistry,$id,Request $request,AuthorRepository $repository)
     {
         $author=$repository->find($id);
-        $author->setUsername("fares");
-        $author->setEmail("fares.brayek@esprit.tn");
-        $em= $managerRegistry->getManager();
-        $em->flush();
-        return $this->redirectToRoute("list_authors");
+        $form= $this->createForm(AuthorType::class,$author);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $em= $managerRegistry->getManager();
+            $em->persist($author);
+            $em->flush();
+            return $this->redirectToRoute("list_authors");
+        }
+        return $this->render("author/update.html.twig",
+            ['form'=>$form->createView()]);
     }
 
     #[Route('/add', name: 'add')]

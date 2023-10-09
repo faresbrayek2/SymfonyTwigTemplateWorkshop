@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\AuthorRepository;
+use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Author;
 
 
 class AuthorController extends AbstractController
@@ -76,5 +78,53 @@ class AuthorController extends AbstractController
         return $this->render("author/authors.html.twig",
             array('tabAuthors'=>$authors));
     }
+
+        #[Route('/show/{id}', name: 'showAuthorById')]
+    public function showAuthorById($id,AuthorRepository $repository)
+    {
+        $author= $repository->find($id);
+        $Username = $author->getUsername();
+        return $this->render("author/showAuthorDetails.html.twig",
+            array('author'=>$author));
+    }
+
+    
+    #[Route('/delete/{id}', name: 'delete')]
+    public function deleteAuthor($id,AuthorRepository $repository,ManagerRegistry $managerRegistry)
+    {
+        $author= $repository->find($id);
+        $em= $managerRegistry->getManager();
+        $em->remove($author);
+        $em->flush();
+        return $this->redirectToRoute("list_authors");
+    }
+
+    #[Route('/addauthor', name: 'add_author')]
+    public function addAuthor(ManagerRegistry $managerRegistry)
+    {
+        $author= new Author();
+        $author->setUsername("author4");
+        $author->setEmail("author4@gmail.com");
+        #1ere method
+        #$em= $this->getDoctrine()->getManager();
+        #2methode
+        $em= $managerRegistry->getManager();
+        $em->persist($author);
+        $em->flush();
+        return $this->redirectToRoute("list_authors");
+    }
+
+
+    #[Route('/update/{id}', name: 'update_author')]
+    public function update(ManagerRegistry $managerRegistry,$id,AuthorRepository $repository)
+    {
+        $author=$repository->find($id);
+        $author->setUsername("fares");
+        $author->setEmail("fares.brayek@esprit.tn");
+        $em= $managerRegistry->getManager();
+        $em->flush();
+        return $this->redirectToRoute("list_authors");
+    }
+
 
 }

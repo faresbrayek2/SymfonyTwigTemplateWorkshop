@@ -25,6 +25,9 @@ class Book
     #[ORM\Column(length: 255)]
     private ?string $published = null;
 
+    #[ORM\ManyToOne(inversedBy: 'books')]
+    private ?Author $authors = null;
+
     public function getRef(): ?int
     {
         return $this->ref;
@@ -81,6 +84,18 @@ class Book
     public function setPublished(string $published): static
     {
         $this->published = $published;
+
+        return $this;
+    }
+
+    public function getAuthors(): ?Author
+    {
+        return $this->authors;
+    }
+
+    public function setAuthors(?Author $authors): static
+    {
+        $this->authors = $authors;
 
         return $this;
     }
